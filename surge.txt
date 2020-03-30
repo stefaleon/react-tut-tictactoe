@@ -1,0 +1,11 @@
+$ surge build
+
+   Running as stefaleon@gmail.com (Student)
+
+        project: build
+         domain: react-tutorial-tictactoe.surge.sh
+         upload: [====================] 100% eta: 0.0s (18 files, 498961 bytes)
+            CDN: [====================] 100%
+             IP: 45.55.110.124
+
+   Success! - Published to react-tutorial-tictactoe.surge.sh
