@@ -500,3 +500,70 @@ Note
 Unlike the array `push()` method you might be more familiar with, the `concat()` method doesn’t mutate the original array, so we prefer it.
 
 At this point, the Board component only needs the `renderSquare` and `render` methods. The game’s state and the `handleClick` method should be in the Game component.
+
+Showing the Past Moves
+
+Since we are recording the tic-tac-toe game’s history, we can now display it to the player as a list of past moves.
+
+We learned earlier that React elements are first-class JavaScript objects; we can pass them around in our applications. To render multiple items in React, we can use an array of React elements.
+
+Using the map method, we can map our history of moves to React elements representing buttons on the screen, and display a list of buttons to “jump” to past moves.
+
+Let’s map over the `history` in the Game’s `render` method:
+
+```
+render() {
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const winner = calculateWinner(current.squares);
+
+    const moves = history.map((step, move) => {
+      const desc = move ? 'Go to move #' + move : 'Go to game start';
+      return (
+        <li>
+          {' '}
+          <button onClick={() => this.jumpTo(move)}>{desc}</button>{' '}
+        </li>
+      );
+    });
+
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
+
+    return (
+      <div className='game'>
+        <div className='game-board'>
+          <Board squares={current.squares} onClick={i => this.handleClick(i)} />
+        </div>
+        <div className='game-info'>
+          <div>{status}</div>
+          <ol>{moves}</ol>
+        </div>
+      </div>
+    );
+  }
+```
+
+For each move in the tic-tac-toes’s game’s history, we create a list item `<li>` which contains a button `<button>`. The button has a `onClick` handler which calls a method called `this.jumpTo()`. We haven’t implemented the `jumpTo()` method yet. For now, we should see a list of the moves that have occurred in the game and a warning in the developer tools console that says:
+
+Warning: Each child in an array or iterator should have a unique “key” prop. Check the render method of “Game”.
+
+When a list is re-rendered, React takes each list item’s key and searches the previous list’s items for a matching key. If the current list has a key that didn’t exist before, React creates a component. If the current list is missing a key that existed in the previous list, React destroys the previous component. If two keys match, the corresponding component is moved. Keys tell React about the identity of each component which allows React to maintain state between re-renders. If a component’s key changes, the component will be destroyed and re-created with a new state.
+
+key is a special and reserved property in React (along with ref, a more advanced feature). When an element is created, React extracts the key property and stores the key directly on the returned element. Even though key may look like it belongs in props, key cannot be referenced using this.props.key. React automatically uses key to decide which components to update. A component cannot inquire about its key.
+
+It’s strongly recommended that you assign proper keys whenever you build dynamic lists. If you don’t have an appropriate key, you may want to consider restructuring your data so that you do.
+
+If no key is specified, React will present a warning and use the array index as a key by default. Using the array index as a key is problematic when trying to re-order a list’s items or inserting/removing list items. Explicitly passing key={i} silences the warning but has the same problems as array indices and is not recommended in most cases.
+
+Keys do not need to be globally unique; they only need to be unique between components and their siblings.
+
+Implementing Time Travel
+
+In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential number of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
+
+In the Game component’s render method, we can add the key as `<li key={move}>` and React’s warning about keys should disappear:
