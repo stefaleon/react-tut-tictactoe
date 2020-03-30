@@ -598,3 +598,34 @@ jumpTo(step) {
   this.setState({ stepNumber: step, xIsNext: step % 2 === 0 });
 }
 ```
+
+We will now make a few changes to the Game’s `handleClick` method which fires when you click on a square.
+
+The `stepNumber` state we’ve added reflects the move displayed to the user now. After we make a new move, we need to update `stepNumber` by adding `stepNumber: history.length` as part of the `this.setState` argument. This ensures we don’t get stuck showing the same move after a new one has been made.
+
+We will also replace reading `this.state.history` with `this.state.history.slice(0, this.state.stepNumber + 1)`. This ensures that if we “go back in time” and then make a new move from that point, we throw away all the “future” history that would now become incorrect.
+
+```
+handleClick(i) {
+  const history = this.state.history.slice(0, this.state.stepNumber + 1);
+  const current = history[history.length - 1];
+  const squares = current.squares.slice();
+  if (calculateWinner(squares) || squares[i]) {
+    return;
+  }
+  squares[i] = this.state.xIsNext ? 'X' : 'O';
+  this.setState({
+    history: history.concat([{ squares: squares }]),
+    stepNumber: history.length,
+    xIsNext: !this.state.xIsNext
+  });
+}
+```
+
+Finally, we will modify the Game component’s `render` method from always rendering the last move to rendering the currently selected move according to `stepNumber`:
+
+```
+    const current = history[this.state.stepNumber];
+```
+
+If we click on any step in the game’s history, the tic-tac-toe board should immediately update to show what the board looked like after that step occurred.
