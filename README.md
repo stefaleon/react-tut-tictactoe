@@ -19,3 +19,13 @@ Add a file named index.css in the src/ folder with this CSS code.
 Add a file named index.js in the src/ folder with this JS code.
 
 Add these three lines to the top of index.js in the src/ folder:
+
+By inspecting the code, you’ll notice that we have three React components:
+
+    Square
+    Board
+    Game
+
+The Square component renders a single <button> and the Board renders 9 squares. The Game component renders a board with placeholder values which we’ll modify later. There are currently no interactive components.
+
+Congratulations! You’ve just “passed a prop” from a parent Board component to a child Square component. Passing props is how information flows in React apps, from parents to children.
