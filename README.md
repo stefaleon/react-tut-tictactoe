@@ -223,3 +223,27 @@ Determining When to Re-Render in React
 The main benefit of immutability is that it helps you build pure components in React. Immutable data can easily determine if changes have been made which helps to determine when a component requires re-rendering.
 
 You can learn more about shouldComponentUpdate() and how you can build pure components by reading Optimizing Performance.
+
+Function Components
+
+We’ll now change the Square to be a **function component**.
+
+In React,**function components** are a simpler way to write components that only contain a `render` method and don’t have their own state. Instead of defining a class which extends `React.Component`, we can write a function that takes props as input and returns what should be rendered. Function components are less tedious to write than classes, and many components can be expressed this way.
+
+Replace the Square class with this function:
+
+```
+function Square(props) {
+  return (
+    <button className='square' onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
+}
+```
+
+We have changed `this.props` to `props` both times it appears.
+
+Note
+
+When we modified the Square to be a function component, we also changed `onClick={() => this.props.onClick()}` to a shorter `onClick={props.onClick}` (note the lack of parentheses on both sides).
