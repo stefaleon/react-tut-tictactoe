@@ -247,3 +247,37 @@ We have changed `this.props` to `props` both times it appears.
 Note
 
 When we modified the Square to be a function component, we also changed `onClick={() => this.props.onClick()}` to a shorter `onClick={props.onClick}` (note the lack of parentheses on both sides).
+
+Taking Turns
+
+We now need to fix an obvious defect in our tic-tac-toe game: the “O”s cannot be marked on the board.
+
+We’ll set the first move to be “X” by default. We can set this default by modifying the initial state in our Board constructor:
+
+```
+class Board extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { squares: Array(9).fill(null), xIsNext: true };
+  }
+```
+
+Each time a player moves, `xIsNext` (a boolean) will be flipped to determine which player goes next and the game’s state will be saved. We’ll update the Board’s `handleClick` function to flip the value of `xIsNext`:
+
+```
+handleClick(i) {
+    const squares = this.state.squares.slice();
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({ squares: squares, xIsNext: !this.state.xIsNext });
+  }
+```
+
+With this change, “X”s and “O”s can take turns. Try it!
+
+Let’s also change the “status” text in Board’s `render` so that it displays which player has the next turn:
+
+```
+render() {
+    const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+
+```
