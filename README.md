@@ -281,3 +281,60 @@ render() {
     const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
 
 ```
+
+Declaring a Winner
+
+Now that we show which player’s turn is next, we should also show when the game is won and there are no more turns to make. Copy this helper function and paste it at the end of the file:
+
+```
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+}
+```
+
+Given an array of 9 squares, this function will check for a winner and return 'X', 'O', or null as appropriate.
+
+We will call `calculateWinner(squares)` in the Board’s `render` function to check if a player has won. If a player has won, we can display text such as “Winner: X” or “Winner: O”. We’ll replace the `status` declaration in Board’s `render` function with this code:
+
+```
+ render() {
+    const winner = calculateWinner(this.state.squares);
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
+
+```
+
+We can now change the Board’s `handleClick` function to return early by ignoring a click if someone has won the game or if a Square is already filled:
+
+```
+handleClick(i) {
+  const squares = this.state.squares.slice();
+  if (calculateWinner(squares) || squares[i]) {
+    return;
+  }
+  squares[i] = this.state.xIsNext ? 'X' : 'O';
+  this.setState({ squares: squares, xIsNext: !this.state.xIsNext });
+}
+```
+
+Congratulations! You now have a working tic-tac-toe game. And you’ve just learned the basics of React too. So you’re probably the real winner here.
