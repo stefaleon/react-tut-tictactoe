@@ -106,3 +106,60 @@ We will now use the prop passing mechanism again. We will modify the Board to in
     return <Square value={this.state.squares[i]} />;
   }
 ```
+
+Each Square will now receive a value prop that will either be 'X', 'O', or null for empty squares.
+
+Next, we need to change what happens when a Square is clicked. The Board component now maintains which squares are filled. We need to create a way for the Square to update the Board’s state. Since state is considered to be private to a component that defines it, we cannot update the Board’s state directly from Square.
+
+Instead, we’ll pass down a function from the Board to the Square, and we’ll have Square call that function when a square is clicked. We’ll change the renderSquare method in Board to:
+
+```
+renderSquare(i) {
+    return (
+      <Square
+        value={this.state.squares[i]}
+        onClick={() => this.handleClick(i)}
+      />
+    );
+  }
+```
+
+    Note
+
+    We split the returned element into multiple lines for readability, and added parentheses so that JavaScript doesn’t insert a semicolon after return and break our code.
+
+Now we’re passing down two props from Board to Square: value and onClick. The onClick prop is a function that Square can call when clicked. We’ll make the following changes to Square:
+
+- Replace this.state.value with this.props.value in Square’s render method
+- Replace this.setState() with this.props.onClick() in Square’s render method
+- Delete the constructor from Square because Square no longer keeps track of the game’s state
+
+After these changes, the Square component looks like this:
+
+```
+class Square extends React.Component {
+  render() {
+    return (
+      <button className='square' onClick={() => this.props.onClick()}>
+        {this.props.value}
+      </button>
+    );
+  }
+}
+```
+
+When a Square is clicked, the onClick function provided by the Board is called. Here’s a review of how this is achieved:
+
+1. The `onClick` prop on the built-in DOM `<button>` component tells React to set up a click event listener.
+
+2. When the button is clicked, React will call the onClick event handler that is defined in Square’s render() method.
+
+3. This event handler calls `this.props.onClick()`. The Square’s `onClick` prop was specified by the Board.
+
+4. Since the Board passed `onClick={() => this.handleClick(i)}` to Square, the Square calls `this.handleClick(i)` when clicked.
+
+5. We have not defined the handleClick() method yet, so our code crashes. If you click a square now, you should see a red error screen saying something like “this.handleClick is not a function”.
+
+   Note
+
+   The DOM `<button>` element’s `onClick` attribute has a special meaning to React because it is a built-in component. For custom components like Square, the naming is up to you. We could give any name to the Square’s `onClick` prop or Board’s `handleClick` method, and the code would work the same. In React, it’s conventional to use `on[Event]` names for props which represent events and `handle[Event]` for the methods which handle the events.
