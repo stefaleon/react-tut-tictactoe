@@ -11,3 +11,11 @@ You can close the tic-tac-toe game once you’re familiar with it. We’ll be st
 ```
 npx create-react-app my-app
 ```
+
+Delete all files in the src/ folder of the new project
+
+Add a file named index.css in the src/ folder with this CSS code.
+
+Add a file named index.js in the src/ folder with this JS code.
+
+Add these three lines to the top of index.js in the src/ folder:
