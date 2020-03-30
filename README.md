@@ -567,3 +567,34 @@ Implementing Time Travel
 In the tic-tac-toe game’s history, each past move has a unique ID associated with it: it’s the sequential number of the move. The moves are never re-ordered, deleted, or inserted in the middle, so it’s safe to use the move index as a key.
 
 In the Game component’s render method, we can add the key as `<li key={move}>` and React’s warning about keys should disappear:
+
+```
+return (
+  <li key={move}>
+    <button onClick={() => this.jumpTo(move)}>{desc}</button>
+  </li>
+);
+```
+
+Clicking any of the list item’s buttons throws an error because the `jumpTo` method is undefined. Before we implement `jumpTo`, we’ll add `stepNumber` to the Game component’s state to indicate which step we’re currently viewing.
+
+First, add stepNumber: 0 to the initial state in Game’s constructor:
+
+```
+constructor(props) {
+  super(props);
+  this.state = {
+    history: [{ squares: Array(9).fill(null) }],
+    stepNumber: 0,
+    xIsNext: true
+  };
+}
+```
+
+Next, we’ll define the `jumpTo` method in Game to update that `stepNumber`. We also set `xIsNext` to `true` if the number that we’re changing `stepNumber` to is even:
+
+```
+jumpTo(step) {
+  this.setState({ stepNumber: step, xIsNext: step % 2 === 0 });
+}
+```

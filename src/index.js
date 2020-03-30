@@ -46,7 +46,11 @@ class Board extends React.Component {
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { history: [{ squares: Array(9).fill(null) }], xIsNext: true };
+    this.state = {
+      history: [{ squares: Array(9).fill(null) }],
+      stepNumber: 0,
+      xIsNext: true
+    };
   }
 
   handleClick(i) {
@@ -61,6 +65,10 @@ class Game extends React.Component {
       history: history.concat([{ squares: squares }]),
       xIsNext: !this.state.xIsNext
     });
+  }
+
+  jumpTo(step) {
+    this.setState({ stepNumber: step, xIsNext: step % 2 === 0 });
   }
 
   render() {
