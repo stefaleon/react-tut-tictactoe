@@ -49,3 +49,60 @@ Now we’ll change the Square’s render method to display the current state’s
 By calling this.setState from an onClick handler in the Square’s render method, we tell React to re-render that Square whenever its `<button>` is clicked. After the update, the Square’s this.state.value will be 'X', so we’ll see the X on the game board. If you click on any Square, an X should show up.
 
 When you call setState in a component, React automatically updates the child components inside of it too.
+
+Completing the Game
+
+We now have the basic building blocks for our tic-tac-toe game. To have a complete game, we now need to alternate placing “X”s and “O”s on the board, and we need a way to determine a winner.
+
+Lifting State Up
+
+Currently, each Square component maintains the game’s state. To check for a winner, we’ll maintain the value of each of the 9 squares in one location.
+
+We may think that Board should just ask each Square for the Square’s state. Although this approach is possible in React, we discourage it because the code becomes difficult to understand, susceptible to bugs, and hard to refactor. Instead, the best approach is to store the game’s state in the parent Board component instead of in each Square. The Board component can tell each Square what to display by passing a prop, just like we did when we passed a number to each Square.
+
+To collect data from multiple children, or to have two child components communicate with each other, you need to declare the shared state in their parent component instead. The parent component can pass the state back down to the children by using props; this keeps the child components in sync with each other and with the parent component.
+
+Lifting state into a parent component is common when React components are refactored — let’s take this opportunity to try it out.
+
+Add a constructor to the Board and set the Board’s initial state to contain an array of 9 nulls corresponding to the 9 squares:
+
+```
+class Board extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null),
+    };  }
+
+  renderSquare(i) {
+    return <Square value={i} />;
+  }
+```
+
+When we fill the board in later, the this.state.squares array will look something like this:
+
+```
+[
+'O', null, 'X',
+'X', 'X', 'O',
+'O', null, null,
+]
+```
+
+The Board’s renderSquare method currently looks like this:
+
+```
+renderSquare(i) {
+  return <Square value={i} />;
+}
+```
+
+In the beginning, we passed the value prop down from the Board to show numbers from 0 to 8 in every Square. In a different previous step, we replaced the numbers with an “X” mark determined by Square’s own state. This is why Square currently ignores the value prop passed to it by the Board.
+
+We will now use the prop passing mechanism again. We will modify the Board to instruct each individual Square about its current value ('X', 'O', or null). We have already defined the squares array in the Board’s constructor, and we will modify the Board’s renderSquare method to read from it:
+
+```
+  renderSquare(i) {
+    return <Square value={this.state.squares[i]} />;
+  }
+```
